@@ -1,13 +1,20 @@
+# Cuando el entorno funcione, fijen versiones con: pip freeze > requirements-lock.txt
 numpy
 pandas
 scikit-learn
 scikit-image
 opencv-python
+Pillow
+imagehash          # deduplicacion por hash perceptual
 matplotlib
 seaborn
 xgboost
-tensorflow
+tensorflow         # en Windows nativo solo CPU desde TF 2.11; suficiente para una CNN pequena
+statsmodels        # prueba de McNemar
 streamlit
 pyyaml
 joblib
 pytest
+# Opcionales:
+# streamlit-webrtc  # video en vivo en la interfaz
+# codecarbon        # medir energia/CO2 para el analisis ambiental (PI2)

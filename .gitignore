@@ -4,12 +4,22 @@ __pycache__/
 .venv/
 .env
 .DS_Store
-# Datos pesados: se versionan solo anotaciones y .gitkeep
+kaggle.json
+
+# Datos pesados: no se versionan. Las imagenes propias se comparten por la carpeta
+# en la nube indicada en data/README.md; aqui solo van anotaciones y .gitkeep.
 data/raw/kaggle/*
 data/raw/mixed_quality/*
 data/raw/own_images/*
-data/interim/*
-data/processed/*
+data/raw/other_groups/*
+# Con "/**" + "!/**/" git sigue entrando en las subcarpetas y puede rescatar sus .gitkeep
+# (con "data/interim/*" la subcarpeta segmented/ quedaba excluida entera).
+data/interim/**
+!data/interim/**/
+data/processed/**
+!data/processed/**/
+!data/processed/splits.csv
 experiments/checkpoints/*
+
 !**/.gitkeep
 !data/annotations/*.csv

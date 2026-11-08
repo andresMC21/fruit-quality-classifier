@@ -1,5 +1,11 @@
-"""División train/val/test FIJA y sin fuga de datos (misma fruta no puede estar en dos splits).
-El test debe contener imágenes propias para medir generalización real."""
+"""Division train/val/test FIJA, AGRUPADA y estratificada.
 
-def make_splits(annotations_csv: str, seed: int = 42):
+- Grupo = fruit_id (fotos propias) o grupo de duplicados de dedup.py (Kaggle). Un grupo nunca aparece en dos splits.
+- Estratificar por quality_class (StratifiedGroupKFold o GroupShuffleSplit repetido hasta balancear).
+- El test incluye una fraccion de frutas PROPIAS (config: split.test_own), para medir la generalizacion a datos locales.
+- Guardar el resultado en data/processed/splits.csv (se versiona) y no regenerarlo despues de mirar el test.
+"""
+
+
+def make_splits(annotations_csv: str, cfg: dict):
     raise NotImplementedError

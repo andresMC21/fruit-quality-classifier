@@ -1,12 +1,44 @@
 seed: 42
-classes: [buena, regular, mala]      # ajustar a la definición del grupo
+
+# Especie(s) de trabajo: elegir entre las que existen en Kaggle/FruitNet
+# (apple, banana, guava, lime, orange, pomegranate) para aprovechar los datos publicos.
+fruit_species: [apple]
+
+classes: [buena, regular, mala]          # orden ordinal; ajustar a la guia de anotacion
 size_classes: [pequeno, mediano, grande]
 image_size: [128, 128]
-split: {train: 0.70, val: 0.15, test: 0.15}   # test debe incluir imágenes PROPIAS
+
+dedup:
+  method: phash                 # hash perceptual (imagehash) para agrupar fotos casi identicas
+  hamming_threshold: 6          # fotos con distancia <= umbral se tratan como la misma fruta
+
+split:
+  strategy: group               # GroupShuffleSplit por fruit_id / grupo de duplicados: nunca aleatorio por imagen
+  stratify_by: quality_class
+  val: 0.15
+  test_public: 0.15             # fraccion de grupos Kaggle/mixed reservada para test
+  test_own: 0.40                # fraccion de frutas PROPIAS (por fruit_id) reservada para test
+  output: data/processed/splits.csv   # se versiona: el split queda fijo y auditable
+
+size:
+  reference_object_diameter_mm: null   # p. ej. diametro real de la moneda/tapa usada como referencia
+  thresholds: per_species_train_terciles   # umbrales calculados SOLO con train, por especie
+
+metrics:
+  primary: f1_macro
+  critical_class: mala          # reportar recall de esta clase
+  # Costo de error (filas = real, columnas = predicho), en el orden de "classes".
+  # Vender una fruta mala como buena se penaliza mas que descartar una buena; ajustar y justificar.
+  cost_matrix: [[0, 1, 2],
+                [1, 0, 1],
+                [4, 2, 0]]
+
 paths:
   raw_kaggle: data/raw/kaggle
   raw_mixed: data/raw/mixed_quality
   raw_own: data/raw/own_images
+  raw_other_groups: data/raw/other_groups
   interim: data/interim
   processed: data/processed
   annotations: data/annotations/annotations.csv
+  final_model_dir: models
