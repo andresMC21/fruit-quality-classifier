@@ -1,0 +1,12 @@
+seed: 42
+classes: [buena, regular, mala]      # ajustar a la definición del grupo
+size_classes: [pequeno, mediano, grande]
+image_size: [128, 128]
+split: {train: 0.70, val: 0.15, test: 0.15}   # test debe incluir imágenes PROPIAS
+paths:
+  raw_kaggle: data/raw/kaggle
+  raw_mixed: data/raw/mixed_quality
+  raw_own: data/raw/own_images
+  interim: data/interim
+  processed: data/processed
+  annotations: data/annotations/annotations.csv

@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+.env
+.DS_Store
+# Datos pesados: se versionan solo anotaciones y .gitkeep
+data/raw/kaggle/*
+data/raw/mixed_quality/*
+data/raw/own_images/*
+data/interim/*
+data/processed/*
+experiments/checkpoints/*
+!**/.gitkeep
+!data/annotations/*.csv
