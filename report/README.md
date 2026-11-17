@@ -15,4 +15,12 @@ Figuras vectoriales (SVG o EMF en Word, PDF en LaTeX) en `figures/`.
 | Referencias | 0,6 | IEEE |
 
 Lo que no quepa (tablas completas de experimentos, guía de anotación) va al repositorio y se referencia.
+
+## Formato de la plantilla (revisado en el .docx)
+- Carta (8,5 × 11 in); márgenes: superior 0,75 in, inferior 1 in, laterales ≈ 0,62 in. Times New Roman.
+- Título a 1 columna (`papertitle`); autores en secciones de 4 columnas (`Author`), lo que sirve justo para los 4 integrantes;
+  cuerpo a 2 columnas con 18 pt de separación (`BodyText`, `Heading1`–`Heading5`, `equation`, `figurecaption`, `tablehead`, `references`).
+- Antes de entregar, borrar: la nota "*Note: Sub-titles are not captured in Xplore…", el cuadro `sponsors` (financiación),
+  todo el texto de instrucciones, las 12 referencias de ejemplo y el párrafo final de advertencia de IEEE.
+- La plantilla está en inglés, pero la consigna no exige inglés. Si se escribe en español, usar "Resumen" y "Palabras clave".
 Guion del video: `video/guion.md`.

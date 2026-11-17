@@ -7,11 +7,12 @@ Metodología: **CRISP-DM** adaptada. Despliegue: interfaz **Streamlit** con carg
 Plan de trabajo, roles y riesgos: [`docs/plan_trabajo.md`](docs/plan_trabajo.md).
 
 ## Integrantes
-| Nombre | Rol principal (semanas 1-2 → 3-4) |
-|---|---|
-| _Integrante A_ | Datos y anotación → ética, impactos, edición del informe |
-| _Integrante B_ | Segmentación, tamaño y línea base → ML clásico, evaluación, formulación matemática |
-| _Integrante C_ | Pipeline de inferencia y esqueleto de la app → CNN, integración, video |
+| Nombre | GitHub | Rol principal |
+|---|---|---|
+| Camilo A. Martínez Moreno | [andresMC21](https://github.com/andresMC21) | _por acordar_ |
+| Santiago Carlosama Ortiz | [CarlosamaSantiago](https://github.com/CarlosamaSantiago) | _por acordar_ |
+| Javier Andrés Paz Luna | [Javi-19](https://github.com/Javi-19) | _por acordar_ |
+| Paula Andrea Piedrahita | [Pauli55](https://github.com/Pauli55) | _por acordar_ |
 
 ## Mapa CRISP-DM → repositorio
 | Fase | Documentación | Código | Notebook | Resultados |
@@ -40,8 +41,14 @@ streamlit run src/app/streamlit_app.py
 ```
 Más detalle en `docs/instalacion.md`.
 
+## Re-etiquetado de Kaggle (en curso)
+```powershell
+streamlit run src/data/annotate_app.py
+```
+Criterios y procedimiento: `docs/guia_anotacion.md` (secciones 1 y 5). Cada quien versiona solo `data/annotations/kaggle_labels/<usuario>.csv`.
+
 ## Datos y fuentes de terceros
 - Fruit Quality Classification (Kaggle, ryandpark): https://www.kaggle.com/datasets/ryandpark/fruit-quality-classification
-- FruitNet (K. Patil, V. Meshram), Mendeley Data, doi: 10.17632/b6fftwbr2v.1, licencia CC BY 4.0.
+- FruitNet (K. Patil, V. Meshram), Mendeley Data, doi: 10.17632/b6fftwbr2v.3, licencia CC BY 4.0. Es el origen que cita la ficha de Kaggle y tiene las mismas 19.526 imágenes; se descargó desde Mendeley.
 - Imágenes propias y compartidas por el curso: ver `data/README.md`.
 - Todo código o dato de terceros se cita en `docs/referencias.md` (omitirlo se considera fraude).

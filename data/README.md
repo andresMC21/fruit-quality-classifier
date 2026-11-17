@@ -9,6 +9,10 @@
 | `interim/segmented/` | Recortes individuales + máscaras generados por `src/data/segment.py`. | No (se regeneran) |
 | `processed/splits.csv` | Asignación fija `image_id → train/val/test`. | **Sí** |
 | `annotations/annotations.csv` | Una fila por imagen o recorte (esquema abajo). | **Sí** |
+| `annotations/kaggle_inventory.csv` | Imágenes por carpeta del zip de FruitNet/Kaggle. | **Sí** |
+| `annotations/kaggle_groups.csv` | Cada imagen de manzana de Kaggle con su `fruit_id` (grupo de casi-duplicados). | **Sí** |
+| `annotations/label_queue.csv` | Cola fija de re-etiquetado (una imagen por `fruit_id`) y a quién le toca. | **Sí** |
+| `annotations/kaggle_labels/<usuario>.csv` | Etiquetas de cada anotador; se consolidan luego en `annotations.csv`. | **Sí** |
 
 ## Compartir con el curso
 Las anotaciones sin las imágenes no sirven a otros grupos. Se comparten **ambas cosas**:

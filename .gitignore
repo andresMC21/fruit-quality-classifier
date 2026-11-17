@@ -3,6 +3,8 @@ __pycache__/
 .ipynb_checkpoints/
 .venv/
 .env
+.idea/
+.pytest_cache/
 .DS_Store
 kaggle.json
 

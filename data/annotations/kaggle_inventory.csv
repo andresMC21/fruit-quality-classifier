@@ -1,0 +1,19 @@
+folder,n_images
+Bad Quality_Fruits/Apple_Bad,1141
+Bad Quality_Fruits/Banana_Bad,1087
+Bad Quality_Fruits/Guava_Bad,1129
+Bad Quality_Fruits/Lime_Bad,1085
+Bad Quality_Fruits/Orange_Bad,1159
+Bad Quality_Fruits/Pomegranate_Bad,1187
+Good Quality_Fruits/Apple_Good,1149
+Good Quality_Fruits/Banana_Good,1113
+Good Quality_Fruits/Guava_Good,1152
+Good Quality_Fruits/Lime_Good,1094
+Good Quality_Fruits/Orange_Good,1216
+Good Quality_Fruits/Pomegranate_Good,5940
+Mixed Qualit_Fruits/Apple,113
+Mixed Qualit_Fruits/Banana,285
+Mixed Qualit_Fruits/Guava,148
+Mixed Qualit_Fruits/Lemon,278
+Mixed Qualit_Fruits/Orange,125
+Mixed Qualit_Fruits/Pomegranate,125

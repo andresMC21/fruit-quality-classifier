@@ -9,7 +9,8 @@ imagehash          # deduplicacion por hash perceptual
 matplotlib
 seaborn
 xgboost
-tensorflow         # en Windows nativo solo CPU desde TF 2.11; suficiente para una CNN pequena
+torch              # CNN. TensorFlow ya no usa GPU en Windows nativo desde 2.11; PyTorch si (CUDA).
+torchvision        # Con GPU NVIDIA instalar ambos antes, desde el indice de PyTorch (ver docs/instalacion.md)
 statsmodels        # prueba de McNemar
 streamlit
 pyyaml
