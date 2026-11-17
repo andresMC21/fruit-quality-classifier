@@ -32,14 +32,36 @@ y validado sobre grupos que el modelo no vio (split agrupado por g).
 | Tamaño por segmentación + geometría | Es medible y explicable, y no requiere etiquetas de tamaño para entrenar. | Regresión del tamaño con una CNN: no hay suficientes diámetros medidos. |
 
 ## 3. Fundamentos aplicados (justificar cada paso)
+### 3.0 Grupos de casi-duplicados (implementado en `src/data/dedup.py`)
+Cada imagen se resume en un pHash h(x) ∈ {0,1}⁶⁴: la DCT de la imagen reducida a 32×32 en grises, comparando los 8×8 coeficientes
+de baja frecuencia con su mediana. Dos imágenes son "la misma fruta" si la distancia de Hamming d_H(h(x), h(x′)) ≤ τ, con τ = 6.
+Los grupos son las componentes conexas de esa relación (union-find), y g = grupo. El split agrupado garantiza que un mismo g no
+quede en train y test a la vez. Efecto medido: Apple_Bad pasa de 1.141 imágenes a 378 grupos.
+
 ### 3.1 Segmentación
-Umbral de Otsu sobre un canal (p. ej. S de HSV o a\* de Lab). Se elige el t que maximiza la varianza entre clases:
-σ_B²(t) = ω₀(t)·ω₁(t)·[μ₀(t) − μ₁(t)]².
-Después se aplican operaciones morfológicas (apertura y cierre) y se conserva la componente conexa de mayor área.
+Implementado en `src/data/segment.py`. Se estima el color del fondo b como la mediana, en Lab, del marco exterior de la imagen
+(5 % del lado menor; el protocolo deja margen alrededor de la fruta). Para cada píxel se calcula
+D(u) = √( (w_L·ΔL)² + Δa² + Δb² ), con w_L = 0,5: se le resta peso a la luminosidad para que las sombras, que oscurecen
+el fondo sin cambiarle el color, no cuenten como fruta. Sobre D se aplica el umbral de Otsu, que elige el t que maximiza
+la varianza entre clases σ_B²(t) = ω₀(t)·ω₁(t)·[μ₀(t) − μ₁(t)]². Si ese t es menor que 12 unidades Lab, no hay nada
+distinto del fondo. Después vienen apertura y cierre morfológicos, el relleno de huecos (brillos de la piel) y las
+componentes conexas con área ≥ 1 % de la imagen. Se priorizan las que no tocan el borde.
+Antes se detecta el cuadrado de referencia (contorno de 4 vértices, convexo, aspecto 0,85–1,15, que llena ≥ 90 % de su
+rectángulo mínimo, que no toca el borde, que ocupa ≤ 20 % de la imagen y con interior oscuro y uniforme: gris medio
+≤ 90 y desviación ≤ 25) y se borra para que no salga como fruta. Lado = promedio de los lados de su rectángulo mínimo + 1 px.
+Validación: con una imagen sintética (disco de 300 px y cuadrado de 200 px = 50 mm, fondo con sombra y brillo en la fruta)
+el diámetro estimado fue 75,0 mm frente a 75 mm. Pruebas automáticas en `tests/test_segment.py` y `tests/test_size_estimator.py`. En fotos de Kaggle funciona con fondos uniformes y falla con fondos texturados (madera, césped)
+o cuando hay una mano. Las frutas que se tocan quedan unidas: se probó separar con watershed sobre la transformada de
+distancia y no fue confiable, así que se descartó.
 
 ### 3.2 Características y normalización
-- Histograma HSV normalizado: h_b = n_b / Σ n_b. Se usa HSV porque separa el tono de la iluminación (V).
-- Textura LBP o GLCM (contraste, homogeneidad); forma (circularidad 4πA/P², solidez).
+Implementado en `src/data/features.py`: 54 valores calculados solo dentro de la componente mayor de la máscara. Color y textura
+se miden con el recorte llevado a 128 px de lado mayor (LBP compara vecinos a 1 px, así que solo es comparable a la misma
+escala), y la textura excluye el borde de la máscara, donde los vecinos son fondo. La forma se mide en la máscara original.
+- Histograma HSV normalizado (H 16 bins, S 8, V 8): h_b = n_b / Σ n_b. Se usa HSV porque separa el tono de la iluminación (V).
+- Momentos de color en Lab por canal: media μ, desviación σ y asimetría E[(x − μ)³]/σ³. La asimetría capta colas, como pocas manchas oscuras sobre una piel clara.
+- Textura LBP uniforme (P = 8, R = 1): cada píxel se codifica comparando sus 8 vecinos con él; el histograma de 10 patrones resume la textura. Los golpes y el moho rompen la textura lisa.
+- Forma: circularidad 4πA/P², solidez A/A_casco y relación de aspecto. El área no se usa: no es calidad y en Kaggle depende de la distancia.
 - Estandarización z = (φ − μ_train) / σ_train, con μ y σ calculados **solo con train** (si no, hay fuga).
   Es necesaria para el SVM con kernel RBF, que depende de distancias euclidianas.
 
@@ -52,7 +74,10 @@ Después se aplican operaciones morfológicas (apertura y cierre) y se conserva 
 
 ### 3.4 Tamaño
 - Área de la máscara A (píxeles) → diámetro equivalente d_px = 2·√(A/π).
-- Calibración con un objeto de referencia de diámetro D_ref (mm) que mide d_ref píxeles: d̂_mm = d_px · D_ref / d_ref.
+- Calibración con un objeto de referencia de diámetro D_ref (mm) que mide d_ref píxeles: s₀ = D_ref / d_ref (mm/px en el plano de la mesa).
+- Corrección de perspectiva (modelo de cámara estenopeica, vista cenital a altura H). Un objeto a altura h sobre la mesa se ve con escala
+  s(h) = s₀·(H − h)/H. El contorno más ancho de la manzana está a h ≈ d/2, así que d = d_px·s₀·(H − d/2)/H; despejando,
+  d̂_mm = d_px·s₀ / (1 + d_px·s₀/(2H)). Sin corregir, el error relativo es ≈ d/(2H) (≈ 12 % con d = 75 mm y H = 30 cm).
 - Error frente al diámetro medido: MAE = (1/n) Σ |d̂ᵢ − dᵢ| y error relativo medio.
 - Clases de tamaño por especie: umbrales en los terciles q₁/₃ y q₂/₃ de d̂ calculados en train.
 
