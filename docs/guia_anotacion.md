@@ -1,5 +1,8 @@
 # Guía de anotación y protocolo de captura
 
+## 0. Alcance de especies
+Manzana, banano, mango, guayaba, naranja y lima. Las bases públicas se mapean así: Kaggle *Good* = buena, *Bad* = mala; Fruit grade 1.º = buena, 2.º = regular, 3.º = mala. Esas etiquetas son débiles y se revisan con los criterios de abajo.
+
 ## 1. Definición de clases de calidad (completar y acordar con el curso)
 Las clases son **ordinales** (buena > regular > mala). Cada criterio debe poder verificarse mirando la foto.
 

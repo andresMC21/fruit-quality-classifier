@@ -10,8 +10,6 @@ kaggle.json
 # en la nube indicada en data/README.md; aqui solo van anotaciones y .gitkeep.
 data/raw/kaggle/*
 data/raw/mixed_quality/*
-data/raw/own_images/*
-data/raw/other_groups/*
 # Con "/**" + "!/**/" git sigue entrando en las subcarpetas y puede rescatar sus .gitkeep
 # (con "data/interim/*" la subcarpeta segmented/ quedaba excluida entera).
 data/interim/**
@@ -23,3 +21,29 @@ experiments/checkpoints/*
 
 !**/.gitkeep
 !data/annotations/*.csv
+
+# Bases públicas descargadas (pesadas) y archivos de trabajo locales
+Fruit grade/
+Fruits Grade.zip
+experiments/logs/*.jpg
+experiments/logs/tmp/
+experiments/checkpoints/*.h5
+experiments/checkpoints/*.joblib
+experiments/checkpoints/*.json
+
+experiments/logs/*.png
+
+# Scripts locales de trabajo (no se versionan)
+commit_por_etapas.sh
+.pytest_cache/
+
+# Cualquier dato crudo y caches de características (no versionar)
+data/raw/afruitdb/*
+data/raw/fruit grade/*
+data/raw/sultana/*
+*.npz
+*.h5
+*.zip
+
+# Los modelos exportados de models/ (.joblib) SI se versionan; los checkpoints no
+!models/*.joblib

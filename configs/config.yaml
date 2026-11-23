@@ -2,7 +2,7 @@ seed: 42
 
 # Especie(s) de trabajo: elegir entre las que existen en Kaggle/FruitNet
 # (apple, banana, guava, lime, orange, pomegranate) para aprovechar los datos publicos.
-fruit_species: [apple]
+fruit_species: [apple, banana, mango, guava, orange, lime, grape, strawberry]
 
 classes: [buena, regular, mala]          # orden ordinal; ajustar a la guia de anotacion
 size_classes: [pequeno, mediano, grande]
@@ -11,6 +11,9 @@ image_size: [128, 128]
 dedup:
   method: phash                 # hash perceptual (imagehash) para agrupar fotos casi identicas
   hamming_threshold: 6          # fotos con distancia <= umbral se tratan como la misma fruta
+  max_per_group: 3              # máx. imágenes por grupo de duplicados que entran al modelado
+  burst_seconds: 3              # fotos consecutivas de la misma carpeta con <= N s entre sí y hash 'parecido' (burst_hamming)
+  burst_hamming: 18             # se consideran la misma fruta (ráfaga de vistas)
 
 split:
   strategy: group               # GroupShuffleSplit por fruit_id / grupo de duplicados: nunca aleatorio por imagen
@@ -18,6 +21,8 @@ split:
   val: 0.15
   test_public: 0.15             # fraccion de grupos Kaggle/mixed reservada para test
   test_own: 0.40                # fraccion de frutas PROPIAS (por fruit_id) reservada para test
+  # Conjunto EXTERNO: fotos de otra fuente que NO se usan para entrenar (solo para medir generalización entre fuentes)
+  external: {source: sultana, species: [apple, banana, orange, guava]}
   output: data/processed/splits.csv   # se versiona: el split queda fijo y auditable
 
 size:
@@ -35,6 +40,8 @@ metrics:
 
 paths:
   raw_kaggle: data/raw/kaggle
+  raw_sultana: Sultana             # Sultana et al. (Mendeley): fresca/podrida, fotos de tiendas
+  raw_afruitdb: Fruit grade        # carpeta de AFruitDB tal como se descargó (no se versiona)
   raw_mixed: data/raw/mixed_quality
   raw_own: data/raw/own_images
   raw_other_groups: data/raw/other_groups
