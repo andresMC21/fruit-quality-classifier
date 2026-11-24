@@ -1,0 +1,15 @@
+fruit_species,source,n,tasa_fallo,otsu,grabcut
+apple,afruitdb,480,0.023,0.717,0.26
+apple,kaggle,1621,0.124,0.472,0.404
+apple,sultana,400,0.108,0.808,0.085
+banana,afruitdb,483,0.0,0.932,0.068
+banana,kaggle,1196,0.013,0.751,0.237
+banana,sultana,399,0.005,0.975,0.02
+grape,sultana,400,0.0,0.958,0.042
+guava,kaggle,1541,0.151,0.349,0.5
+guava,sultana,399,0.113,0.792,0.095
+lime,kaggle,943,0.189,0.494,0.317
+mango,afruitdb,618,0.0,0.96,0.04
+orange,kaggle,1367,0.154,0.544,0.301
+orange,sultana,400,0.038,0.952,0.01
+strawberry,sultana,400,0.29,0.535,0.175
