@@ -1,1 +1,13 @@
-exp_id,date,model,hyperparams,cv_f1_macro,val_f1_macro,test_f1_macro,notes
+exp_id,date,model,hyperparams,cv_f1_macro,val_f1_macro,val_recall_mala,val_cost,fit_seconds,test_f1_macro,notes
+quality_majority_1117,2026-11-17,quality:majority,{},,0.2367,0.0,1.5203,0.0,,val agrupada; sin fotos propias aún
+quality_logreg_1117,2026-11-17,quality:logreg,"{""C"": 10}",0.7803,0.7969,0.9127,0.2956,2.9,,val agrupada; sin fotos propias aún
+quality_svm_1117,2026-11-17,quality:svm,"{""C"": 10, ""gamma"": 0.03}",0.8941,0.8915,0.9524,0.1331,10.6,,val agrupada; sin fotos propias aún
+quality_rf_1117,2026-11-17,quality:rf,"{""max_depth"": 20, ""min_samples_leaf"": 3, ""n_estimators"": 400}",0.8742,0.8772,0.918,0.2087,81.2,,val agrupada; sin fotos propias aún
+species_svm_1117,2026-11-17,species:svm,"{""C"": 100, ""gamma"": ""scale""}",0.9481,0.9603,,,11.8,,val agrupada; sin fotos propias aún
+cnn_1117,2026-11-17,quality+species:cnn_3conv,"{""input"": 64, ""filters"": [32, 64, 128], ""epochs_run"": 40, ""optimizer"": ""adam_cosine_2e-3""}",,0.8159,0.9259,0.2625,689.1,,aug leve; parada temprana en val_loss
+quality_majority_1118,2026-11-18,quality:majority,{},,0.2372,0.0,1.5514,0.0,,val agrupada; sin fotos propias aún
+quality_logreg_1118,2026-11-18,quality:logreg,"{""C"": 1}",0.7755,0.7556,0.8258,0.4592,2.3,,val agrupada; sin fotos propias aún
+quality_svm_1118,2026-11-18,quality:svm,"{""C"": 10, ""gamma"": 0.03}",0.9044,0.9025,0.9379,0.1352,13.5,,val agrupada; sin fotos propias aún
+quality_rf_1118,2026-11-18,quality:rf,"{""max_depth"": 20, ""min_samples_leaf"": 3, ""n_estimators"": 400}",0.8776,0.8726,0.9236,0.194,91.6,,val agrupada; sin fotos propias aún
+species_svm_1118,2026-11-18,species:svm,"{""C"": 100, ""gamma"": ""scale""}",0.9552,0.9622,,,14.8,,val agrupada; sin fotos propias aún
+cnn_1118,2026-11-18,quality+species:cnn_3conv,"{""input"": 64, ""filters"": [32, 64, 128], ""epochs_run"": 30, ""optimizer"": ""adam_cosine_2e-3""}",,0.8062,0.9284,0.288,596.4,,aug leve; parada temprana en val_loss
