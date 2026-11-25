@@ -1,0 +1,5 @@
+fruit_species,n,accuracy,f1_macro,cost,recall_mala
+apple,357,0.529,0.472,1.801,0.178
+banana,397,0.668,0.696,0.685,0.845
+guava,354,0.833,0.832,0.667,0.696
+orange,385,0.361,0.305,2.239,0.075

@@ -1,0 +1,4 @@
+vs,only_best_correct,only_other_correct,p_value
+majority,497,43,1.2340496962770078e-84
+logreg,171,30,5.351903646243584e-23
+rf,64,29,0.00042246757669391993

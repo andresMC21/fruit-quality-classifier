@@ -1,0 +1,4 @@
+source,n,accuracy,f1_macro,cost,recall_mala
+afruitdb,226,0.779,0.824,0.235,0.97
+kaggle,840,0.973,0.972,0.086,0.961
+sultana,96,0.969,0.969,0.125,0.939
