@@ -1,4 +1,6 @@
 # Formulación y fundamentos matemáticos (PI3)
+> **Estado:** la estructura sigue el pipeline implementado (`src/`). Valores reales: 59 características (`features.py`), SVM C = 10, γ = 0,03; CNN de 3 convoluciones con entrada 64x64 y dos salidas (especie y calidad). El modelo de calidad recibe además la especie en one-hot. Las secciones 4 y 5 se completan con el test.
+
 Borrador de la estructura que pide el documento de competencias. Las ecuaciones son las que corresponden al pipeline
 planeado; hay que ajustarlas a lo que finalmente se implemente y completar con los resultados.
 
@@ -21,7 +23,7 @@ y validado sobre grupos que el modelo no vio (split agrupado por g).
 - Entrada de alta dimensión (128·128·3 ≈ 49 000 variables) con pocos ejemplos propios.
 - Gran variabilidad dentro de cada clase (madurez, variedad, iluminación) y fronteras difusas entre clases ordinales.
 - Etiquetas subjetivas, que se cuantifican con kappa de Cohen.
-- Cambio de dominio: India (Kaggle) frente a Colombia (fotos propias); desbalanceo de clases.
+- Cambio de dominio: entre fuentes (India/Kaggle, Fruit grade, Bangladesh/Sultana); medido con el test externo (F1 0,889 → 0,600 en el SVM); desbalanceo de clases.
 - Costos de error asimétricos y dos salidas con naturaleza distinta (clasificación y medición).
 
 ## 2. Estrategia de solución
