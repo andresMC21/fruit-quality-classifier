@@ -1,0 +1,80 @@
+{
+  "species": [
+    "apple",
+    "banana",
+    "mango",
+    "guava",
+    "orange",
+    "lime",
+    "grape",
+    "strawberry"
+  ],
+  "classes": [
+    "buena",
+    "regular",
+    "mala"
+  ],
+  "image_size": [
+    128,
+    128
+  ],
+  "species_model": "species_svm.joblib",
+  "quality_model": "quality_svm.joblib",
+  "quality_models": {
+    "svm": "quality_svm.joblib",
+    "rf": "quality_rf.joblib",
+    "logreg": "quality_logreg.joblib"
+  },
+  "default_quality": "svm",
+  "size_thresholds": {
+    "apple": {
+      "relative": [
+        0.6093098613888127,
+        0.7450998561330644
+      ],
+      "source": "afruitdb",
+      "n": 335
+    },
+    "banana": {
+      "relative": [
+        0.5962797970652743,
+        0.6365267682791735
+      ],
+      "source": "afruitdb",
+      "n": 343
+    },
+    "mango": {
+      "relative": [
+        0.6235535764872282,
+        0.7089175261975047
+      ],
+      "source": "afruitdb",
+      "n": 442
+    },
+    "guava": {
+      "relative": [
+        0.479599495684062,
+        0.5840922866733005
+      ],
+      "source": "kaggle",
+      "n": 936
+    },
+    "orange": {
+      "relative": [
+        0.6024580029898776,
+        0.7185142533541442
+      ],
+      "source": "kaggle",
+      "n": 823
+    },
+    "lime": {
+      "relative": [
+        0.6061106558051367,
+        0.7492162892921456
+      ],
+      "source": "kaggle",
+      "n": 549
+    }
+  },
+  "note": "Prototipo académico; umbrales relativos dependen de la fuente de datos."
+}

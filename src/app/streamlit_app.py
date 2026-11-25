@@ -1,18 +1,65 @@
-"""Fase 6: interfaz Streamlit (carga de imagen o st.camera_input) que muestra calidad y tamano predichos.
-Ejecutar desde la raiz del repo: streamlit run src/app/streamlit_app.py
+"""Fase 6: interfaz Streamlit (cámara o carga de imagen) que muestra especie, calidad y tamaño.
+Ejecutar desde la raíz del repo:  streamlit run src/app/streamlit_app.py
 
-st.camera_input toma una foto (minimo viable). Para ver la prediccion en vivo, como pide la fase 6,
-la extension es streamlit-webrtc o un bucle con cv2.VideoCapture.
+Modo local (por defecto): usa src/inference/predict.py directamente.
+Modo cliente: si existe la variable de entorno API_URL, envía la imagen a un backend FastAPI (POST /predict).
 """
+import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+import cv2
+import numpy as np
 import streamlit as st
 
-st.title("Clasificador de calidad de frutas")
-st.caption("Prototipo académico: no certifica calidad comercial.")
+from src.inference.predict import load_model, predict
 
-img = st.camera_input("Capture la fruta") or st.file_uploader("...o cargue una imagen", type=["jpg", "jpeg", "png"])
-if img:
-    st.image(img)
-    # TODO: decodificar a BGR, llamar a src.inference.predict.predict(img_bgr, model) y mostrar
-    # clase, probabilidades, tamano y la mascara; si segmentation_ok es False o la confianza es baja,
-    # pedir otra foto o revision humana.
-    st.info("Pendiente: conectar con src/inference/predict.py")
+st.set_page_config(page_title="Calidad de frutas", page_icon="🍎")
+
+
+@st.cache_resource
+def get_model():
+    return load_model("models")
+
+
+model = get_model()
+meta = model["meta"]
+names = {"svm": "SVM (RBF)", "rf": "Random Forest", "logreg": "Regresión logística (línea base)"}
+
+st.title("Clasificador de calidad de frutas")
+st.caption("Prototipo académico: no certifica calidad comercial. "
+           f"Frutas soportadas: {', '.join(meta['species'])}.")
+
+with st.sidebar:
+    qkey = st.selectbox("Modelo de calidad", list(model["qualities"]), format_func=lambda k: names.get(k, k),
+                        index=list(model["qualities"]).index(meta.get("default_quality", "svm")))
+    ref_mm = st.number_input("Diámetro del objeto de referencia (mm, 0 = sin referencia)", 0.0, 200.0, 0.0, 0.1,
+                             help="Moneda o tapa colocada junto a la fruta, en el mismo plano. Con ella se estima el diámetro en mm.")
+    st.markdown("**Cómo tomar la foto:** una sola fruta, fondo liso (cartulina blanca o gris), buena luz, sin manos.")
+
+src = st.radio("Origen de la imagen", ["Cámara", "Subir archivo"], horizontal=True)
+f = st.camera_input("Capture la fruta") if src == "Cámara" else st.file_uploader("Cargue una imagen", type=["jpg", "jpeg", "png"])
+
+if f is not None:
+    img = cv2.imdecode(np.frombuffer(f.getvalue(), np.uint8), cv2.IMREAD_COLOR)
+    with st.spinner("Analizando…"):
+        p = predict(img, model, ref_diameter_mm=ref_mm or None, quality_model=qkey)
+    c1, c2 = st.columns(2)
+    c1.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), caption="Imagen original", use_container_width=True)
+    if p.crop is not None:
+        c2.image(cv2.cvtColor(p.crop, cv2.COLOR_BGR2RGB), caption="Fruta aislada (entrada del modelo)", use_container_width=True)
+    if not p.segmentation_ok or p.species is None:
+        st.warning(p.message)
+    else:
+        st.subheader(f"{p.species} · calidad: {p.quality}")
+        st.caption(f"Confianza de especie: {p.species_confidence:.0%}")
+        st.bar_chart({k: v for k, v in p.probabilities.items()})
+        if p.needs_review:
+            st.warning(p.message)
+        size_txt = (p.size_class or "sin umbrales") + (f" · ≈ {p.diameter_mm:.0f} mm" if p.diameter_mm else
+                                                       f" (relativo al encuadre: {p.relative_diameter:.2f})")
+        st.info(f"Tamaño: {size_txt}")
+        if not p.diameter_mm:
+            st.caption("Sin objeto de referencia el tamaño es relativo a la foto, no una medida en milímetros.")
