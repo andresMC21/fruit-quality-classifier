@@ -5,8 +5,8 @@ Solo material leído y usado: datasets, librerías, artículos, código de terce
 - [1] ryandpark (usuario de Kaggle), "Fruit Quality Classification," Kaggle. [Online]. Available: https://www.kaggle.com/datasets/ryandpark/fruit-quality-classification
 - [2] K. Patil, "FruitNet: Indian fruits dataset with quality (Good, Bad & Mixed quality)," Mendeley Data, v1, 2021, doi: 10.17632/b6fftwbr2v.1. (CC BY 4.0)
   > Verificar en la ficha de Kaggle si [1] es una redistribución de [2]; si lo es, citar ambas.
-- [7] Fruit grade (AFruitDB / Asian Fruits Dataset): manzana, banano, mango, papaya, tomate y uva birmana con grados 1.º/2.º/3.º. Referencia completa **pendiente**: copiar autores, año y DOI de la ficha de la base de datos de donde se descargó.
-- [3] V. Meshram y K. Patil, "FruitNet: Indian fruits image dataset with quality for machine learning applications," *Data in Brief*, 2022. (Verificar volumen y páginas; útil para comparar con la literatura).
+- [7] M. U. Mojumdar, M. A. Mamun, S. Islam y R. Hasan, “A Dataset of Common Asian Fruits for Quality Grading and Biodiversity Research,” Mendeley Data, v1, 2024. [DOI](https://doi.org/10.17632/bz65dz2pbj.1).
+- [3] V. Meshram y K. Patil, “FruitNet: Indian fruits image dataset with quality for machine learning applications,” *Data in Brief*, vol. 40, art. 107686, 2022. [DOI](https://doi.org/10.1016/j.dib.2021.107686).
 
 ## Ética
 - [4] ACM, "ACM Code of Ethics and Professional Conduct," 2018.
@@ -24,6 +24,6 @@ Solo material leído y usado: datasets, librerías, artículos, código de terce
 
 ## Software
 - scikit-learn, OpenCV, scikit-image, TensorFlow/Keras, Streamlit, imagehash (citar versiones de `requirements.txt`).
-- [15] M. S. Sultana, T. Jahan *et al.*, "Fresh and rotten fruits dataset (Bangladesh)," Mendeley Data, v1, doi: 10.17632/bdd69gyhv8.1. **Verificar autores, año y artículo asociado en la ficha.**
+- [15] N. Sultana, M. Jahan y M. S. Uddin, “Fresh and Rotten Fruits Dataset for Machine-Based Evaluation of Fruit Quality,” Mendeley Data, v1, 2022. [DOI](https://doi.org/10.17632/bdd69gyhv8.1).
 - [16] FruQ-DB / FruQ-multi, Zenodo, record 7224690 (evaluada y descartada; citar en el informe como fuente descartada con el motivo).
 - [17] FruityHub, Mendeley Data, doi/ID ch5vgt8v9k (evaluada y descartada).

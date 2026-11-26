@@ -2,17 +2,17 @@
 
 Sistema de visión por computadora que, a partir de una foto de **una fruta individual sobre fondo uniforme**,
 predice (1) su **clase de calidad** (≥ 3 categorías ordinales) y (2) su **tamaño** (pequeño/mediano/grande y diámetro estimado en mm).
-Especies: manzana, banano, mango, guayaba, naranja y lima. Metodología: **CRISP-DM** adaptada. Despliegue: interfaz **Streamlit** con carga de imagen y cámara.
+Especies: manzana, banano, mango, guayaba, naranja, lima, uva y fresa. Metodología: **CRISP-DM** adaptada. Despliegue: interfaz **Streamlit** con carga de imagen y cámara.
 
 Plan de trabajo, roles y riesgos: [`docs/plan_trabajo.md`](docs/plan_trabajo.md).
 
 ## Integrantes
-| Nombre | Rol principal (semanas 1-2 → 3-4) |
-|---|---|
-| Camilo A. Martinez Moreno | Datos y anotación → ética, impactos, edición del informe |
-| Santiago Carlosama Ortiz | Segmentación, tamaño y línea base → ML clásico, evaluación, formulación matemática |
-| Javier Andrés Paz Luna | Pipeline de inferencia y esqueleto de la app → CNN, integración, video |
-| Paula Andrea Piedrahita | _por definir_ |
+| Nombre | GitHub | Aporte en el repositorio |
+|---|---|---|
+| Camilo A. Martinez Moreno | [andresMC21](https://github.com/andresMC21) | Configuración, comprensión del problema, anotaciones y análisis exploratorio |
+| Santiago Carlosama Ortiz | [CarlosamaSantiago](https://github.com/CarlosamaSantiago) | Preparación de datos y evaluación |
+| Javier Andrés Paz Luna | [Javi-19](https://github.com/Javi-19) | Modelado, inferencia, aplicación y exportación de modelos |
+| Paula Andrea Piedrahita | [Pauli55](https://github.com/Pauli55) | Ética, impactos, formulación matemática, referencias, informe y diagramas |
 
 ## Mapa CRISP-DM → repositorio
 | Fase | Documentación | Código | Notebook | Resultados |
