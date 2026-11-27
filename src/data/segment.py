@@ -96,6 +96,9 @@ def _otsu_mask(img_bgr: np.ndarray) -> np.ndarray:
     return _clean(m)
 
 
+GRABCUT_SEED = 42  # igual a `seed` en configs/config.yaml
+
+
 def _grabcut_mask(img_bgr: np.ndarray, iters: int = 4) -> np.ndarray:
     h, w = img_bgr.shape[:2]
     # semilla: región central probablemente fruta, borde seguramente fondo, núcleo del centro seguramente fruta
@@ -105,6 +108,7 @@ def _grabcut_mask(img_bgr: np.ndarray, iters: int = 4) -> np.ndarray:
     m[:b], m[-b:], m[:, :b], m[:, -b:] = cv2.GC_BGD, cv2.GC_BGD, cv2.GC_BGD, cv2.GC_BGD
     m[int(0.4 * h):int(0.6 * h), int(0.4 * w):int(0.6 * w)] = cv2.GC_FGD
     bgd, fgd = np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64)
+    cv2.setRNGSeed(GRABCUT_SEED)   # GrabCut inicializa sus mezclas gaussianas con k-means aleatorio: sin semilla no es reproducible
     try:
         cv2.grabCut(img_bgr, m, None, bgd, fgd, iters, cv2.GC_INIT_WITH_MASK)
     except cv2.error:

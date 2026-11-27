@@ -7,6 +7,11 @@ Dos imágenes de la misma carpeta (fuente + clase) se unen en un mismo grupo (un
   (a) distancia de Hamming de pHash <= dedup.hamming_threshold, o
   (b) fueron tomadas con <= dedup.burst_seconds entre sí (ráfaga, por la marca de tiempo del nombre de archivo)
       y su distancia de pHash <= dedup.burst_hamming.
+Fuentes sin marca de tiempo y con varias fotos seguidas de la misma fruta girada (FruitVision): el pHash no une
+vistas rotadas, así que la unidad de partición (`fruit_id`) es un TRAMO de ~dedup.sequence_chunk fotos consecutivas
+(orden del nombre de archivo), con cada corte movido al mayor salto de pHash dentro de ±dedup.sequence_window
+posiciones; luego se une con los grupos de pHash. Fruits-360: la unidad es la carpeta (una variedad, a menudo
+una sola fruta fotografiada girando).
 La regla (b) es deliberadamente conservadora (agrupa de más): se prefiere perder variedad en train a filtrar fuga.
 Salida: columna `dup_group`, usada por split.py como unidad de partición.
 """
@@ -93,5 +98,79 @@ def add_dup_groups(df: pd.DataFrame, cfg: dict, root: str = ".", cache: str | No
     c = cfg["dedup"]
     gid = compute_groups(df, hashes, c["hamming_threshold"], c.get("burst_seconds", 0), c.get("burst_hamming", 0))
     out = df.copy()
-    out["dup_group"] = [f"{s[:3].upper()}_{sp[:3]}_g{g:05d}" for s, sp, g in zip(out["source"], out["fruit_species"], gid)]
+    from src.data.manifest import id_prefix
+    out["dup_group"] = [f"{id_prefix(s)}_{sp[:3]}_g{g:05d}" for s, sp, g in zip(out["source"], out["fruit_species"], gid)]
     return out, hashes
+
+
+def partition_units(df: pd.DataFrame, hashes: np.ndarray, cfg: dict):
+    """(fruit_id, dup_group) por fila. Por defecto fruit_id = dup_group; ver docstring del módulo."""
+    c = cfg["dedup"]
+    seq_src = set(c.get("sequence_sources", []))
+    chunk, win = c.get("sequence_chunk", 30), c.get("sequence_window", 5)
+    unit = df["dup_group"].astype(str).copy()
+    uf = _UF(len(df))
+    for (src, lab, sp), idx in df.groupby(["source", "orig_label", "fruit_species"]).indices.items():
+        if src in ("fruits360", "wgisd"):                 # unidad = carpeta (Fruits-360) o foto de viñedo (WGISD)
+            for k in idx[1:]:
+                uf.union(idx[0], k)
+            continue
+        if src not in seq_src:
+            continue
+        order = idx[np.argsort(df["filename"].to_numpy()[idx])]
+        n = len(order)
+        jump = np.array([(hashes[order[i]] != hashes[order[i + 1]]).sum() for i in range(n - 1)])
+        cuts, b = [], chunk
+        while b < n - chunk // 2:
+            lo, hi = max(1, b - win), min(n - 1, b + win)
+            cuts.append(lo + int(np.argmax(jump[lo - 1:hi])))    # corte tras el mayor salto de la ventana
+            b = cuts[-1] + chunk
+        seg = np.searchsorted(cuts, np.arange(n), side="right")
+        for i in range(1, n):
+            if seg[i] == seg[i - 1]:
+                uf.union(order[i - 1], order[i])
+    # unir también los grupos de duplicados (un duplicado lejano en la secuencia arrastra su tramo). En las fuentes
+    # de secuencia la fruta es pequeña sobre fondo gris uniforme y el pHash casi no cambia entre frutas distintas
+    # (encadenaba carpetas enteras), así que ahí el grupo de duplicados es el de ARCHIVOS idénticos (mismo MD5).
+    is_seq = df["source"].isin(seq_src).to_numpy()
+    dup = df["dup_group"].astype(str).copy()
+    if is_seq.any():
+        import hashlib
+        from src.data.manifest import id_prefix
+        first = {}
+        for i in np.where(is_seq)[0]:
+            r = df.iloc[i]
+            h = hashlib.md5(Path(r["filename"]).read_bytes()).hexdigest()
+            j = first.setdefault(h, i)
+            dup.iloc[i] = f"{id_prefix(r['source'])}_{r['fruit_species'][:3]}_x{j:05d}"
+    for _, idx in pd.Series(range(len(df))).groupby(dup.to_numpy()).indices.items():
+        for k in idx[1:]:
+            uf.union(idx[0], k)
+    roots = np.array([uf.find(i) for i in range(len(df))])
+    is_new = df["source"].isin(seq_src | {"fruits360", "wgisd"}).to_numpy()
+    first = {}
+    for i, r in enumerate(roots):
+        first.setdefault(r, i)
+    unit[is_new] = [_rename(unit.iloc[first[r]], "u") for r in roots[is_new]]
+    return unit, dup
+
+
+def _rename(gid: str, tag: str) -> str:
+    """FVI_app_g00012 -> FVI_app_<tag>00012 (solo el último bloque)."""
+    head, _, tail = gid.rpartition("_")
+    return f"{head}_{tag}{tail[1:]}"
+
+
+def cross_source_dups(df: pd.DataFrame, hashes: np.ndarray, sources, threshold: int = 6) -> np.ndarray:
+    """Máscara de imágenes de `sources` con un casi-duplicado (pHash <= threshold) de la MISMA especie en otra
+    fuente. Se excluyen (keep=False): podrían ser la misma foto redistribuida y filtrarse entre train y los tests."""
+    out = np.zeros(len(df), bool)
+    H = hashes.astype(np.uint8)
+    for sp, idx in df.groupby("fruit_species").indices.items():
+        src = df["source"].to_numpy()[idx]
+        new, old = idx[np.isin(src, list(sources))], idx[~np.isin(src, list(sources))]
+        if not len(new) or not len(old):
+            continue
+        d = (H[new][:, None, :] != H[old][None, :, :]).sum(-1)
+        out[new[(d <= threshold).any(1)]] = True
+    return out

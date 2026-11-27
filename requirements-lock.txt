@@ -1,0 +1,16 @@
+# Versiones exactas con las que se probó el proyecto (Python 3.10.11, Windows y Linux, CPU).
+# Instalación reproducible: pip install -r requirements-lock.txt
+numpy==2.2.6
+pandas==2.3.3
+scikit-learn==1.7.2
+scikit-image==0.25.2
+opencv-python==5.1.0.95
+Pillow==12.3.0
+ImageHash==4.3.2
+matplotlib==3.10.9
+statsmodels==0.15.0
+tensorflow==2.21.0
+keras==3.12.4
+streamlit==1.65.0
+joblib==1.6.0
+PyYAML==6.0.4

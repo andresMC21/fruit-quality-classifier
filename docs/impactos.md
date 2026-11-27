@@ -1,14 +1,22 @@
 # Impactos (PI2)
-Se piden dos versiones: un **análisis inicial** (antes de modelar) y un **análisis final** (con los resultados).
-Cada celda debe apoyarse en un dato o un argumento técnico, no en una opinión.
+El enunciado pide un **análisis inicial** (antes de modelar, con lo que se sabía del problema y del EDA) y un **análisis final** (con los resultados). Cada celda se apoya en un dato o un argumento técnico.
 
-| Dimensión | Impactos positivos | Riesgos | Mitigación | Evidencia o dato que la respalda |
+## 1. Análisis inicial (antes de modelar)
+Basado en el contexto del problema y en el EDA (`02_comprension_datos.md`); son hipótesis por comprobar.
+
+| Dimensión | Impactos positivos esperados | Riesgos previstos | Mitigación planeada | Base de la hipótesis |
 |---|---|---|---|---|
-| **Social** | Estandariza la calidad; consumidor mejor informado. | Desplazamiento de clasificadores manuales; desconfianza de pequeños productores; fotos en mercados (privacidad). | Herramienta de apoyo, no reemplazo; criterios transparentes; protocolo de captura. | |
-| **Económica** | Menos pérdida por mala clasificación; hardware barato (celular o webcam). | Errores con costo asimétrico (ver la matriz de costos); el modelo no transfiere a otra variedad sin reentrenar. | Elegir el umbral según el costo; reentrenar con datos locales. | Costo esperado en validación: SVM 0,133 frente a 1,520 de la clase mayoritaria y 0,296 de la regresión logística (`05_evaluacion.md`). |
-| **Ambiental** | Reduce el desperdicio de alimentos. | Energía de entrenamiento e inferencia; residuos electrónicos si se usa hardware dedicado. | Preferir el modelo más liviano si el F1 es similar; inferencia en CPU. | Tiempo de ajuste en CPU de 2 núcleos: logreg 3 s, SVM 11 s, Random Forest 81 s, CNN 689 s (`04_modelado.md`); el SVM rinde más que la CNN con ~60 veces menos cómputo. No se midió energía (recortado en el plan). |
-| **Global** | Aplicable donde hay celulares y no hay equipos industriales. | Normas de calidad distintas por país (NTC de Icontec, estándares internacionales); variedades locales; datos entrenados en otro país. | Clases configurables; documentar el alcance; validar con datos de cada región. | Desempeño por fuente en validación: Kaggle 0,965 vs Fruit grade 0,812 de F1; pendiente el contraste con imágenes propias (Colombia). |
+| **Social** | Estandarizar la calidad; consumidor mejor informado. | Desplazar a clasificadores manuales; desconfianza de pequeños productores; fotos en mercados (privacidad). | Herramienta de apoyo, no reemplazo; criterios transparentes; protocolo de captura sin personas. | La clasificación manual es lenta y subjetiva (enunciado). |
+| **Económica** | Menos pérdida por mala clasificación; hardware barato (celular o webcam). | Errores con costo asimétrico: vender fruta mala cuesta más que descartar fruta buena. | Matriz de costos explícita (`configs/config.yaml`); reportar el recall de "mala". | Costo esperado de la línea base mayoritaria en validación: 1,85 (todo se declara "buena"). |
+| **Ambiental** | Reducir el desperdicio de alimentos. | Energía de entrenamiento e inferencia; residuos si se usa hardware dedicado. | Preferir modelos livianos en CPU; inferencia en el celular o el PC. | Equipo disponible: CPU de 2 núcleos, sin GPU. |
+| **Global** | Útil donde hay celulares y no hay equipos industriales. | Datos de India y Bangladesh: otras variedades, luz y cámaras; normas distintas por país (NTC de Icontec). | Medir en una fuente externa; documentar el alcance por fruta. | EDA: la fuente se adivina desde las características con 97,5 % de exactitud. |
 
+## 2. Análisis final (con los resultados, v2.2)
+| Dimensión | Lo que mostraron los resultados | Riesgo confirmado | Mitigación adoptada | Evidencia |
+|---|---|---|---|---|
+| **Social** | El sistema sirve como apoyo: muestra confianza, recorte y probabilidades. | En otra fuente se equivoca en 1 de cada 4 frutas malas; ninguna fruta validada con fotos de Colombia. | Aviso de alcance en la app; revisión humana si la confianza es baja; rechazo de frutas ajenas. | RF en el externo: F1 0,765, recall de "mala" 0,75 (`05_evaluacion.md`). |
+| **Económica** | En las fuentes de entrenamiento el error es bajo. | Fuera de dominio el costo se multiplica por ~4,6. | Modelo por defecto elegido por robustez entre fuentes (RF), no por el mejor test (SVM). | Costo esperado: RF 0,159 en test y 0,729 en externo; SVM 0,100 y 1,147; mayoritaria 1,719 y 2,098. |
+| **Ambiental** | Todo se entrena en CPU en minutos. | La CNN cuesta ~30 veces más que el SVM y rinde menos. | Modelos clásicos para la calidad; extractor preentrenado congelado para la especie (se reutiliza, no se entrena). | Ajuste: logística 13 s, SVM 43 s, RF 100 s, CNN 1 281 s; MobileNetV2 ~8 min una vez + 15 s la cabeza. No se midió energía. |
+| **Global** | La especie mejora con un extractor general (71,2 % en otra fuente). | Variedades ausentes: mango rojo-amarillo (tipo Tommy) y guayaba de otra fuente no se reconocen. | Alcance por fruta documentado (README, informe, app); validar con datos de cada región antes de usarlo. | Por fuente en test (SVM): Kaggle 0,968, FruitVision 0,973, Fruit grade 0,846; guayaba en otra fuente 14 % (`especie_por_fuente_v22.csv`). |
 
-## Análisis inicial vs. final
-Las columnas "Evidencia" con cifras corresponden al **análisis inicial** (validación). El **análisis final** se completa con el test y el test externo (`05_evaluacion.md`); no hay fotos propias ni MAE en mm. Cifra clave para las cuatro dimensiones: en otra fuente de fotos, el SVM detecta solo 45 % de la fruta mala (RF 78 %), por lo que el sistema es un apoyo, no un sustituto de la revisión humana.
+**Cifra clave para las cuatro dimensiones:** en una fuente de fotos nueva, el modelo por defecto detecta 75 % de la fruta mala. El sistema es un apoyo y no sustituye la inspección humana.

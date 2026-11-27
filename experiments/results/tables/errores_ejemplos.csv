@@ -1,0 +1,9 @@
+image_id,fruit_species,quality_class,pred
+KAG_ban_01122,banana,mala,buena
+FVI_gra_00955,grape,mala,buena
+FVI_gra_00998,grape,mala,buena
+AFR_man_00241,mango,buena,mala
+FVI_app_00538,apple,buena,mala
+FVI_ora_00389,orange,buena,mala
+AFR_ban_00210,banana,buena,regular
+AFR_app_00340,apple,regular,buena

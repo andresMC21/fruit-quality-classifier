@@ -14,6 +14,13 @@ dedup:
   max_per_group: 3              # máx. imágenes por grupo de duplicados que entran al modelado
   burst_seconds: 3              # fotos consecutivas de la misma carpeta con <= N s entre sí y hash 'parecido' (burst_hamming)
   burst_hamming: 18             # se consideran la misma fruta (ráfaga de vistas)
+  sequence_sources: [fruitvision]   # sin hora en el nombre: partición por tramos de fotos consecutivas
+  sequence_chunk: 30
+  sequence_window: 5
+  # sorteo de max_per_group por bloques: la versión 2 no altera lo conservado de la versión 1
+  # sin tope por grupo: FruitVision (duplicados = archivos idénticos) y Fruits-360 (unidad = carpeta)
+  uncapped_sources: [fruitvision, fruits360, wgisd]
+  sample_blocks: [[sultana, kaggle, afruitdb], [fruitvision, fruits360], [wgisd]]
 
 split:
   strategy: group               # GroupShuffleSplit por fruit_id / grupo de duplicados: nunca aleatorio por imagen
@@ -23,7 +30,10 @@ split:
   test_own: 0.40                # fraccion de frutas PROPIAS (por fruit_id) reservada para test
   # Conjunto EXTERNO: fotos de otra fuente que NO se usan para entrenar (solo para medir generalización entre fuentes)
   external: {source: sultana, species: [apple, banana, orange, guava]}
-  output: data/processed/splits.csv   # se versiona: el split queda fijo y auditable
+  output: data/processed/splits.csv
+  frozen: data/processed/splits_v2.csv   # v1 y v2 congeladas: sus imágenes conservan el split (splits_v1.csv = solo v1)
+  species_only_sources: [fruits360, wgisd]   # sin calidad: solo train (salvo `other` y WGISD)
+  species_split_sources: [wgisd]        # racimos de uva: también en val/test para medirlos   # se versiona: el split queda fijo y auditable
 
 size:
   reference_object_diameter_mm: null   # p. ej. diametro real de la moneda/tapa usada como referencia
@@ -40,8 +50,11 @@ metrics:
 
 paths:
   raw_kaggle: data/raw/kaggle
-  raw_sultana: Sultana             # Sultana et al. (Mendeley): fresca/podrida, fotos de tiendas
-  raw_afruitdb: Fruit grade        # carpeta de AFruitDB tal como se descargó (no se versiona)
+  raw_sultana: data/raw/Sultana             # Sultana et al. (Mendeley): fresca/podrida, fotos de tiendas
+  raw_afruitdb: data/raw/Fruit grade        # carpeta de AFruitDB tal como se descargó (no se versiona)
+  raw_fruitvision: data/raw/FruitVision/Fruits Original   # Fresh/Rotten (Formalin-mixed excluida)
+  raw_fruits360: data/raw/Fruits360                      # solo especie (+ clase other)
+  raw_wgisd: data/raw/WGISD                              # racimos de uva recortados (solo especie)
   raw_mixed: data/raw/mixed_quality
   raw_own: data/raw/own_images
   raw_other_groups: data/raw/other_groups

@@ -11,3 +11,20 @@ quality_svm_1118,2026-11-18,quality:svm,"{""C"": 10, ""gamma"": 0.03}",0.9044,0.
 quality_rf_1118,2026-11-18,quality:rf,"{""max_depth"": 20, ""min_samples_leaf"": 3, ""n_estimators"": 400}",0.8776,0.8726,0.9236,0.194,91.6,,val agrupada; sin fotos propias aún
 species_svm_1118,2026-11-18,species:svm,"{""C"": 100, ""gamma"": ""scale""}",0.9552,0.9622,,,14.8,,val agrupada; sin fotos propias aún
 cnn_1118,2026-11-18,quality+species:cnn_3conv,"{""input"": 64, ""filters"": [32, 64, 128], ""epochs_run"": 30, ""optimizer"": ""adam_cosine_2e-3""}",,0.8062,0.9284,0.288,596.4,,aug leve; parada temprana en val_loss
+quality_majority_1126,2026-11-26,quality:majority,{},,0.2348,0.0,1.5824,0.0,,val agrupada; sin fotos propias aún
+quality_logreg_1126,2026-11-26,quality:logreg,"{""C"": 10}",0.7715,0.7752,0.8685,0.3709,2.6,,val agrupada; sin fotos propias aún
+species_logreg_1126,2026-11-26,species:logreg,"{""C"": 1}",0.8633,0.852,,,9.5,,val agrupada; sin fotos propias aún
+quality_svm_1126,2026-11-26,quality:svm,"{""C"": 100, ""gamma"": 0.03}",0.9021,0.9013,0.9413,0.1357,13.5,,val agrupada; sin fotos propias aún
+species_svm_1126,2026-11-26,species:svm,"{""C"": 10, ""gamma"": ""scale""}",0.9565,0.9586,,,14.2,,val agrupada; sin fotos propias aún
+quality_rf_1126,2026-11-26,quality:rf,"{""max_depth"": null, ""min_samples_leaf"": 3, ""n_estimators"": 200}",0.8717,0.8719,0.9038,0.2159,88.0,,val agrupada; sin fotos propias aún
+cnn_1126,2026-11-26,quality+species:cnn_3conv,"{""input"": 64, ""filters"": [32, 64, 128], ""epochs_run"": 30, ""optimizer"": ""adam_cosine_2e-3""}",,0.7891,0.946,0.2978,539.7,,aug leve; parada temprana en val_loss
+quality_majority_1126_v2,2026-11-26,quality:majority,{},,0.2241,0.0,1.8467,0.0,,v2: + FruitVision (+ Fruits-360 en especie); val agrupada
+quality_logreg_1126_v2,2026-11-26,quality:logreg,"{""C"": 10}",0.7291,0.733,0.8373,0.4496,12.7,,v2: + FruitVision (+ Fruits-360 en especie); val agrupada
+species_logreg_1126_v2,2026-11-26,species:logreg,"{""C"": 10}",0.6973,0.8161,,,21.9,,v2: + FruitVision (+ Fruits-360 en especie); val agrupada
+quality_svm_1126_v2,2026-11-26,quality:svm,"{""C"": 100, ""gamma"": ""scale""}",0.8801,0.8829,0.9413,0.1561,43.4,,v2: + FruitVision (+ Fruits-360 en especie); val agrupada
+species_svm_1126_v2,2026-11-26,species:svm,"{""C"": 10, ""gamma"": ""scale""}",0.811,0.912,,,61.7,,v2: + FruitVision (+ Fruits-360 en especie); val agrupada
+quality_rf_1126_v2,2026-11-26,quality:rf,"{""max_depth"": null, ""min_samples_leaf"": 3, ""n_estimators"": 400}",0.8494,0.8673,0.9166,0.2197,100.4,,v2: + FruitVision (+ Fruits-360 en especie); val agrupada
+species_rf_1126_v2,2026-11-26,species:rf,"{""max_depth"": 20, ""min_samples_leaf"": 3, ""n_estimators"": 400}",0.7687,0.8886,,,130.3,,v2: + FruitVision (+ Fruits-360 en especie); val agrupada
+cnn_1126_v2,2026-11-26,quality+species:cnn_3conv,"{""input"": 64, ""filters"": [32, 64, 128], ""epochs_run"": 30, ""optimizer"": ""adam_cosine_2e-3""}",,0.766,0.9372,0.3228,1280.8,,v2: aug leve; parada temprana en val_loss; solo imágenes con calidad
+species_tl_1126_v21,2026-11-26,species:mobilenetv2_congelada+cabeza,"{""backbone"": ""MobileNetV2 ImageNet 128, congelada"", ""head"": ""Dropout .3, Dense 256, Dropout .3"", ""epochs_run"": 11, ""optimizer"": ""adam_1e-3""}",,0.9305,,,14.8,,"v2.1: elegido por validación dejando una fuente fuera (media 0,692 vs 0,436 del SVM)"
+species_tl_1126_v22,2026-11-26,species:mobilenetv2_congelada+cabeza,"{""backbone"": ""MobileNetV2 ImageNet 128, congelada"", ""head"": ""Dropout .3, Dense 256, Dropout .3"", ""class_weight"": true, ""aug_mango"": false, ""epochs_run"": 13, ""optimizer"": ""adam_1e-3""}",,0.9382,,,9.5,,"v2.2: + WGISD (racimos) y más mango de Fruits-360; pesos por clase; validación entre fuentes 0,681 (aumento de mango rojo probado y descartado: val 0,922)"

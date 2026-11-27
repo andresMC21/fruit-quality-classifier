@@ -14,7 +14,7 @@ from tensorflow.keras import layers, models
 IMG = 64
 
 
-def build_cnn(n_species: int, n_quality: int, seed: int = 42) -> tf.keras.Model:
+def build_cnn(n_species: int, n_quality: int, seed: int = 42, dropout: float = 0.3) -> tf.keras.Model:
     tf.keras.utils.set_random_seed(seed)
     x_in = layers.Input((IMG, IMG, 3))
     x = x_in
@@ -24,9 +24,9 @@ def build_cnn(n_species: int, n_quality: int, seed: int = 42) -> tf.keras.Model:
         x = layers.ReLU()(x)
         x = layers.MaxPooling2D()(x)
     x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dropout(0.3)(x)
+    x = layers.Dropout(dropout)(x)
     x = layers.Dense(64, activation="relu")(x)
-    x = layers.Dropout(0.3)(x)
+    x = layers.Dropout(dropout)(x)
     species = layers.Dense(n_species, activation="softmax", name="species")(x)
     quality = layers.Dense(n_quality, activation="softmax", name="quality")(x)
     return models.Model(x_in, {"species": species, "quality": quality}, name="cnn_pequena")

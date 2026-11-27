@@ -1,0 +1,3 @@
+config,lr,dropout,epochs,best_val_loss,val_f1_macro,val_recall_mala,val_cost,train_acc_q,val_acc_q,seconds
+cnn_v4,0.002,0.3,30,0.5549,0.766,0.9372,0.3228,0.8469,0.843,1280.8
+cnn_lr1e3,0.001,0.3,30,0.5842,0.748,0.9423,0.3428,0.8253,0.8295,1064.6

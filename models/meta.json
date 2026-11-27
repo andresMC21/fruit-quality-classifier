@@ -18,63 +18,80 @@
     128,
     128
   ],
-  "species_model": "species_svm.joblib",
-  "quality_model": "quality_svm.joblib",
+  "species_model": "species_tl.keras",
+  "species_fallback": "species_svm.joblib",
+  "quality_model": "quality_rf.joblib",
   "quality_models": {
-    "svm": "quality_svm.joblib",
     "rf": "quality_rf.joblib",
+    "svm": "quality_svm.joblib",
     "logreg": "quality_logreg.joblib"
   },
-  "default_quality": "svm",
+  "default_quality": "rf",
   "size_thresholds": {
     "apple": {
       "relative": [
-        0.6093098613888127,
-        0.7450998561330644
+        0.5988858182130781,
+        0.7392222356596689
       ],
       "source": "afruitdb",
-      "n": 335
+      "n": 331
     },
     "banana": {
       "relative": [
-        0.5962797970652743,
-        0.6365267682791735
+        0.5946532111387481,
+        0.6366197985150632
       ],
       "source": "afruitdb",
-      "n": 343
+      "n": 345
     },
     "mango": {
       "relative": [
-        0.6235535764872282,
-        0.7089175261975047
+        0.6295182723327297,
+        0.7085475575441238
       ],
       "source": "afruitdb",
-      "n": 442
+      "n": 443
     },
     "guava": {
       "relative": [
-        0.479599495684062,
-        0.5840922866733005
+        0.4834928068776253,
+        0.5879710656176643
       ],
       "source": "kaggle",
-      "n": 936
+      "n": 917
     },
     "orange": {
       "relative": [
-        0.6024580029898776,
-        0.7185142533541442
+        0.604930652917248,
+        0.7187710740705803
       ],
       "source": "kaggle",
-      "n": 823
+      "n": 819
     },
     "lime": {
       "relative": [
-        0.6061106558051367,
-        0.7492162892921456
+        0.6029265021261203,
+        0.7561680684574366
       ],
       "source": "kaggle",
-      "n": 549
+      "n": 557
+    },
+    "grape": {
+      "relative": [
+        0.34552746967244996,
+        0.3908771453681889
+      ],
+      "source": "fruitvision",
+      "n": 932
+    },
+    "strawberry": {
+      "relative": [
+        0.6500327604916212,
+        0.9096358407014212
+      ],
+      "source": "sultana",
+      "n": 204
     }
   },
-  "note": "Prototipo académico; umbrales relativos dependen de la fuente de datos."
+  "note": "Prototipo académico; umbrales relativos dependen de la fuente de datos. v2.2: especie con MobileNetV2 congelada + cabeza propia (racimos de WGISD, pesos por clase); calidad por defecto RF (mejor F1 en validación dejando una fuente fuera)."
 }

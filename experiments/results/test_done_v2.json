@@ -1,0 +1,10 @@
+{
+  "models": [
+    "majority",
+    "logreg",
+    "svm",
+    "rf"
+  ],
+  "best": "svm",
+  "n_test": 2195
+}

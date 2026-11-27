@@ -1,0 +1,3 @@
+experimento,val_exactitud,val_other,val_wgisd,mangos_internet,uvas_internet,decision
+cabeza especie v2.2 (pesos por clase),0.9382,0.6037,0.9783,0/3,3/4,elegido
++ aumento de mango rojo-amarillo (2 variantes por mango de train),0.9217,0.4024,1.0,1/3,3/4,descartado (peor en validación)

@@ -2,7 +2,8 @@
 
 Si la app y la evaluación preprocesan distinto, el modelo se comporta peor en la cámara que en el test.
 Por eso todo pasa por aquí:
-    imagen BGR -> segment_image -> recorte enmascarado -> características -> especie -> calidad -> tamaño
+    imagen BGR -> segment_image -> recorte enmascarado -> especie (MobileNetV2 congelada + cabeza propia, sobre el
+    recorte) -> características -> calidad (con la especie predicha en one-hot) -> tamaño
 """
 from __future__ import annotations
 
@@ -39,11 +40,36 @@ class Prediction:
     crop: np.ndarray | None = field(default=None, repr=False)
 
 
+class KerasSpecies:
+    """Envuelve el clasificador de especie con transfer learning (models/species_tl.keras) con la misma interfaz
+    que un modelo de scikit-learn (classes_, predict_proba), pero recibe el RECORTE, no las características."""
+    needs_image = True
+
+    def __init__(self, path: Path):
+        import tensorflow as tf
+        self.model = tf.keras.models.load_model(path)
+        self.classes_ = np.array(json.loads(path.with_suffix(".classes.json").read_text()))
+
+    def predict_proba(self, crops_bgr):
+        from src.models.transfer import to_input
+        return self.model.predict(np.stack([to_input(c) for c in crops_bgr]), verbose=0)
+
+
+def load_species(path: Path):
+    return KerasSpecies(path) if path.suffix == ".keras" else joblib.load(path)
+
+
 def load_model(model_dir: str = "models"):
     d = Path(model_dir)
     meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
     qs = {k: joblib.load(d / f) for k, f in meta.get("quality_models", {"default": meta["quality_model"]}).items()}
-    return dict(meta=meta, species=joblib.load(d / meta["species_model"]), qualities=qs,
+    try:
+        species, aviso = load_species(d / meta["species_model"]), ""
+    except ImportError:                        # sin TensorFlow: especie con el SVM de la v2 (menos robusto)
+        species = joblib.load(d / meta.get("species_fallback", "species_svm.joblib"))
+        aviso = ("TensorFlow no está instalado: la especie se predice con el SVM de respaldo, menos robusto con "
+                 "fotos nuevas. Instale con `pip install -r requirements.txt`.")
+    return dict(meta=meta, species=species, qualities=qs, species_warning=aviso,
                 quality=qs[meta.get("default_quality", next(iter(qs)))])
 
 
@@ -64,13 +90,14 @@ def predict(img_bgr, model, ref_diameter_mm: float | None = None, quality_model:
     crop, cmask = masked_square_crop(img_bgr, seg.mask, seg.bbox, tuple(meta["image_size"]))
     bgra = np.dstack([crop, cmask])
     x = extract_features(bgra)[None]
-    sp_proba = model["species"].predict_proba(x)[0]
+    sm = model["species"]
+    sp_proba = (sm.predict_proba([crop]) if getattr(sm, "needs_image", False) else sm.predict_proba(x))[0]
     sp_classes = list(model["species"].classes_)
     k = int(sp_proba.argmax())
     species, sp_conf = sp_classes[k], float(sp_proba[k])
-    if sp_conf < MIN_SPECIES_CONF:
+    if species == "other" or sp_conf < MIN_SPECIES_CONF:      # `other`: clase de frutas fuera del alcance (Fruits-360)
         return Prediction(None, sp_conf, None, {}, None, None, None, True, True,
-                          f"Fruta no reconocida (confianza {sp_conf:.0%}). Especies soportadas: {', '.join(meta['species'])}.", seg.mask, crop)
+                          f"Fruta no reconocida ({'parece otra fruta' if species == 'other' else f'confianza {sp_conf:.0%}'}). Especies soportadas: {', '.join(meta['species'])}.", seg.mask, crop)
     onehot = np.array([[1.0 if s == species else 0.0 for s in meta["species"]]], np.float32)
     q_proba = qm.predict_proba(np.hstack([x, onehot]))[0]
     q_classes = list(qm.classes_)

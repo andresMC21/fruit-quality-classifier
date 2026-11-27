@@ -1,4 +1,4 @@
-# Cuando el entorno funcione, fijen versiones con: pip freeze > requirements-lock.txt
+# Versiones exactas probadas: requirements-lock.txt (TensorFlow >= 2.16, por el formato Keras 3 del modelo de especie)
 numpy
 pandas
 scikit-learn

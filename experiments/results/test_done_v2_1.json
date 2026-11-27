@@ -1,0 +1,9 @@
+{
+  "species_model": "models/species_tl.keras",
+  "quality_models": [
+    "majority",
+    "logreg",
+    "svm",
+    "rf"
+  ]
+}

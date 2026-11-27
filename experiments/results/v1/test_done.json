@@ -6,5 +6,5 @@
     "rf"
   ],
   "best": "svm",
-  "n_test": 1162
+  "n_test": 1156
 }

@@ -17,6 +17,8 @@ data/interim/**
 data/processed/**
 !data/processed/**/
 !data/processed/splits.csv
+!data/processed/splits_v1.csv
+!data/processed/splits_v2.csv
 experiments/checkpoints/*
 
 !**/.gitkeep
@@ -33,17 +35,22 @@ experiments/checkpoints/*.json
 
 experiments/logs/*.png
 
-# Scripts locales de trabajo (no se versionan)
-commit_por_etapas.sh
 .pytest_cache/
 
 # Cualquier dato crudo y caches de características (no versionar)
 data/raw/afruitdb/*
 data/raw/fruit grade/*
 data/raw/sultana/*
+data/raw/fruitvision/*
+data/raw/fruits360/*
+data/raw/fruitquality/*
+data/raw/wgisd/*
 *.npz
 *.h5
 *.zip
 
 # Los modelos exportados de models/ (.joblib) SI se versionan; los checkpoints no
 !models/*.joblib
+
+# Fotos de internet usadas solo para el diagnóstico de especie (derechos de terceros: no se versionan)
+data/raw/own_images/prueba_internet/

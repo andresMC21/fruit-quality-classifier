@@ -1,8 +1,6 @@
 # Formulación y fundamentos matemáticos (PI3)
-> **Estado:** la estructura sigue el pipeline implementado (`src/`). Valores reales: 59 características (`features.py`), SVM C = 10, γ = 0,03; CNN de 3 convoluciones con entrada 64x64 y dos salidas (especie y calidad). El modelo de calidad recibe además la especie en one-hot. Las secciones 4 y 5 se completan con el test.
+> **Estado:** la estructura sigue el pipeline implementado (`src/`). Valores reales (v2): 59 características (`features.py`), SVM C = 100, γ = scale; especie con MobileNetV2 congelada + cabeza propia; CNN de 3 convoluciones con entrada 64x64 y dos salidas (especie y calidad). El modelo de calidad recibe además la especie en one-hot. Los resultados de test están en `05_evaluacion.md`.
 
-Borrador de la estructura que pide el documento de competencias. Las ecuaciones son las que corresponden al pipeline
-planeado; hay que ajustarlas a lo que finalmente se implemente y completar con los resultados.
 
 ## 1. Formulación del problema
 **Datos.** D = {(xᵢ, yᵢ, dᵢ, gᵢ)}ᵢ₌₁ᴺ, donde
@@ -23,13 +21,14 @@ y validado sobre grupos que el modelo no vio (split agrupado por g).
 - Entrada de alta dimensión (128·128·3 ≈ 49 000 variables) con pocos ejemplos propios.
 - Gran variabilidad dentro de cada clase (madurez, variedad, iluminación) y fronteras difusas entre clases ordinales.
 - Etiquetas subjetivas, que se cuantifican con kappa de Cohen.
-- Cambio de dominio: entre fuentes (India/Kaggle, Fruit grade, Bangladesh/Sultana); medido con el test externo (F1 0,889 → 0,600 en el SVM); desbalanceo de clases.
+- Cambio de dominio: entre fuentes (India/Kaggle, Fruit grade, Bangladesh/Sultana); medido con el test externo (F1 del SVM 0,910 → 0,657; RF 0,891 → 0,765) y con validación dejando una fuente fuera; desbalanceo de clases.
 - Costos de error asimétricos y dos salidas con naturaleza distinta (clasificación y medición).
 
 ## 2. Estrategia de solución
 | Enfoque | Justificación | Alternativas descartadas y motivo |
 |---|---|---|
 | Características manuales φ(x) + SVM / Random Forest | Con pocos datos, un sesgo inductivo fuerte (color y textura codifican los defectos) generaliza mejor; además es interpretable. | KNN: sensible a la escala y a la dimensión. Árbol único: alta varianza. |
+| Especie: extractor preentrenado congelado (MobileNetV2) + cabeza propia | Las características manuales no transfieren la especie entre cámaras (validación entre fuentes 0,44); un extractor general sí (0,69). El enunciado lo permite con capas congeladas y capas propias. | Ajuste fino de toda la red: más cómputo y riesgo de sobreajuste con pocas fuentes. |
 | CNN pequeña desde cero | Aprende las características de forma jerárquica; la convolución explota la invarianza local a traslación. | CNN profunda desde cero: sobreajusta con este volumen de datos. Transfer learning: permitido, pero el enunciado prioriza modelos desde cero. |
 | Tamaño por segmentación + geometría | Es medible y explicable, y no requiere etiquetas de tamaño para entrenar. | Regresión del tamaño con una CNN: no hay suficientes diámetros medidos. |
 

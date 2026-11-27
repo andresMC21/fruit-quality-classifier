@@ -1,0 +1,15 @@
+fruit_species,source,imagenes,grupos,imagenes_por_grupo
+apple,afruitdb,482,448,1.08
+apple,kaggle,2290,1236,1.85
+apple,sultana,400,395,1.01
+banana,afruitdb,484,475,1.02
+banana,kaggle,2200,667,3.3
+banana,sultana,400,386,1.04
+grape,sultana,400,389,1.03
+guava,kaggle,2281,1229,1.86
+guava,sultana,400,395,1.01
+lime,kaggle,2179,478,4.56
+mango,afruitdb,618,589,1.05
+orange,kaggle,2375,890,2.67
+orange,sultana,400,378,1.06
+strawberry,sultana,400,385,1.04

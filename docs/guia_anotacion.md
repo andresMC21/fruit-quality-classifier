@@ -3,7 +3,8 @@
 ## 0. Alcance de especies
 Manzana, banano, mango, guayaba, naranja y lima. Las bases públicas se mapean así: Kaggle *Good* = buena, *Bad* = mala; Fruit grade 1.º = buena, 2.º = regular, 3.º = mala. Esas etiquetas son débiles y se revisan con los criterios de abajo.
 
-## 1. Definición de clases de calidad (completar y acordar con el curso)
+## 1. Definición de clases de calidad
+> El grupo no recolectó fotos propias: las etiquetas usadas vienen de las carpetas de las bases públicas (etiqueta débil, ver `02_comprension_datos.md`). Esta guía queda como protocolo para anotar fotos propias en el futuro.
 Las clases son **ordinales** (buena > regular > mala). Cada criterio debe poder verificarse mirando la foto.
 
 | Clase | Criterios visuales (ejemplo para manzana; adaptar) | Foto de ejemplo |

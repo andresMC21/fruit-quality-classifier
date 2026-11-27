@@ -1,0 +1,9 @@
+conjunto,fuente,n,exactitud,rechazo_falso,rechazo_correcto
+test,todas,2195,0.9754,0.0251,
+test,afruitdb,223,0.991,0.0179,
+test,fruitvision,1039,0.9942,0.0038,
+test,kaggle,831,0.9446,0.0542,
+test,sultana,102,1.0,0.0196,
+test,fruits360 (other),120,,,0.6167
+external,todas,1495,0.5565,0.2488,
+external,sultana,1495,0.5565,0.2488,

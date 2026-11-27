@@ -5,6 +5,10 @@
 - Estratificación por especie x calidad (StratifiedGroupKFold).
 - Test = fracción de grupos públicos (split.test_public) + fracción de frutas PROPIAS (split.test_own), para medir
   también la generalización a datos locales. Las fotos propias se reportan aparte en la evaluación.
+- Versión 2 (fuentes añadidas): las imágenes de la versión 1 CONSERVAN su split (split.frozen); solo las imágenes
+  nuevas se reparten. FruitVision: test_public y val por tramos de secuencia. Fruits-360: las especies del proyecto
+  van solo a train (apoyo para el clasificador de especie); la clase `other` se reparte por carpeta para poder medir
+  el rechazo de frutas fuera del alcance.
 - Solo entran imágenes con segmentación ok. El resultado se versiona (data/processed/splits.csv) y NO se regenera
   después de mirar el test.
 """
@@ -27,6 +31,16 @@ def _pick_fold(df: pd.DataFrame, frac: float, seed: int) -> np.ndarray:
     return held
 
 
+def _split_public(df: pd.DataFrame, sub: pd.DataFrame, sc: dict, seed: int):
+    """Asigna test/val a ~test_public / val de los grupos de `sub` (posiciones de df vía la columna 'index')."""
+    sub = sub.reset_index()
+    test_idx = _pick_fold(sub, sc["test_public"], seed)
+    df.loc[sub.loc[test_idx, "index"], "split"] = "test"
+    rest = sub.drop(index=test_idx).reset_index(drop=True)
+    val_idx = _pick_fold(rest, sc["val"] / (1 - sc["test_public"]), seed + 1)
+    df.loc[rest.loc[val_idx, "index"], "split"] = "val"
+
+
 def make_splits(cfg: dict, root: str = ".") -> pd.DataFrame:
     root = Path(root)
     ann = pd.read_csv(root / cfg["paths"]["annotations"])
@@ -34,7 +48,7 @@ def make_splits(cfg: dict, root: str = ".") -> pd.DataFrame:
     df = ann.merge(seg[["image_id", "ok", "method"]], on="image_id", how="inner")
     df = df[(df["ok"] == True) & (df["keep"] == True)].copy()           # noqa: E712
     df["fruit_id"] = df["fruit_id"].astype(str)
-    df["strat"] = df["fruit_species"] + "|" + df["quality_class"]
+    df["strat"] = df["fruit_species"] + "|" + df["quality_class"].fillna("-").astype(str)
     seed, sc = cfg["seed"], cfg["split"]
     df["split"] = "train"
     ext = sc.get("external")
@@ -49,14 +63,18 @@ def make_splits(cfg: dict, root: str = ".") -> pd.DataFrame:
     own = df[df["source"].isin(OWN_SOURCES)]
     pub = df[~df["source"].isin(OWN_SOURCES)].copy()
 
-    # 1) test: fracción de grupos públicos
-    pub = pub.reset_index()
-    test_idx = _pick_fold(pub, sc["test_public"], seed)
-    df.loc[pub.loc[test_idx, "index"], "split"] = "test"
-    # 2) validación: fracción de los grupos públicos restantes
-    rest = pub.drop(index=test_idx).reset_index(drop=True)
-    val_idx = _pick_fold(rest, sc["val"] / (1 - sc["test_public"]), seed + 1)
-    df.loc[rest.loc[val_idx, "index"], "split"] = "val"
+    frozen_p = root / sc["frozen"] if sc.get("frozen") else None
+    if frozen_p is not None and frozen_p.exists():
+        # versión 1 congelada: mismas asignaciones; solo se reparten las imágenes nuevas
+        fz = pd.read_csv(frozen_p).set_index("image_id")["split"]
+        old = pub["image_id"].isin(fz.index)
+        df.loc[pub.index[old], "split"] = pub.loc[old, "image_id"].map(fz).to_numpy()
+        new = pub[~old]
+        aux = (new["source"].isin(sc.get("species_only_sources", [])) & (new["fruit_species"] != "other")
+               & ~new["source"].isin(sc.get("species_split_sources", [])))      # WGISD sí se reparte (test de racimos)
+        _split_public(df, new[~aux], sc, seed)          # FruitVision + Fruits-360 `other`; aux queda en train
+    else:
+        _split_public(df, pub, sc, seed)                 # 1) test y 2) validación por grupos públicos
 
     # 3) fotos propias: test_own de las frutas (por fruit_id), estratificado; el resto, train/val
     if len(own):

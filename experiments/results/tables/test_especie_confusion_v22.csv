@@ -1,0 +1,10 @@
+real,apple,banana,grape,guava,lime,mango,orange,rechazada,strawberry
+apple,500,1,2,0,2,1,21,25,1
+banana,0,335,0,0,0,1,0,4,0
+grape,0,0,265,0,0,0,1,2,1
+guava,0,0,0,180,5,0,2,5,0
+lime,0,0,0,0,98,0,6,4,0
+mango,0,0,0,0,0,244,0,2,0
+orange,0,0,0,0,1,1,481,11,0
+other,3,0,26,0,0,0,5,86,0
+strawberry,0,0,0,0,0,0,0,0,41

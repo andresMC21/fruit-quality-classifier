@@ -31,6 +31,17 @@ names = {"svm": "SVM (RBF)", "rf": "Random Forest", "logreg": "Regresión logís
 st.title("Clasificador de calidad de frutas")
 st.caption("Prototipo académico: no certifica calidad comercial. "
            f"Frutas soportadas: {', '.join(meta['species'])}.")
+with st.expander("Alcance validado y limitaciones"):
+    st.markdown(
+        "- Entrenado con fotos de India, Bangladesh y Brasil; **no validado con fruta colombiana**.\n"
+        "- **Mango:** se reconoce el mango asiático verde o amarillo; el **mango rojo-amarillo (tipo Tommy) puede leerse como manzana**.\n"
+        "- **Guayaba:** fiable solo en fotos parecidas a las de entrenamiento (14 % en otra fuente).\n"
+        "- **Uva:** grano suelto o racimo; lima y fresa vienen de una sola fuente.\n"
+        "- **Calidad:** 'regular' solo en manzana, banano y mango; fuera de dominio detecta ~75 % de la fruta mala.\n"
+        "- **Tamaño** relativo al encuadre (mm solo con objeto de referencia). Una fruta por foto, fondo liso.")
+
+if model.get("species_warning"):
+    st.warning(model["species_warning"])
 
 with st.sidebar:
     qkey = st.selectbox("Modelo de calidad", list(model["qualities"]), format_func=lambda k: names.get(k, k),
@@ -47,9 +58,9 @@ if f is not None:
     with st.spinner("Analizando…"):
         p = predict(img, model, ref_diameter_mm=ref_mm or None, quality_model=qkey)
     c1, c2 = st.columns(2)
-    c1.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), caption="Imagen original", use_container_width=True)
+    c1.image(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), caption="Imagen original", width="stretch")
     if p.crop is not None:
-        c2.image(cv2.cvtColor(p.crop, cv2.COLOR_BGR2RGB), caption="Fruta aislada (entrada del modelo)", use_container_width=True)
+        c2.image(cv2.cvtColor(p.crop, cv2.COLOR_BGR2RGB), caption="Fruta aislada (entrada del modelo)", width="stretch")
     if not p.segmentation_ok or p.species is None:
         st.warning(p.message)
     else:
