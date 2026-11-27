@@ -4,7 +4,7 @@ Sistema de visión por computadora que, a partir de una foto de **una fruta indi
 predice (1) su **clase de calidad** (≥ 3 categorías ordinales) y (2) su **tamaño** (pequeño/mediano/grande y diámetro estimado en mm).
 Especies: manzana, banano, mango, guayaba, naranja, lima, uva (grano o racimo) y fresa (otras frutas: "no reconocida"). Metodología: **CRISP-DM** adaptada. Despliegue: interfaz **Streamlit** con carga de imagen y cámara.
 
-Informe: `report/Informe_IEEE_frutas.pdf`. Video: enlace en `report/video/README.md`.
+Informe: `report/Informe_IEEE_frutas.pdf`. Video (10 min): https://youtu.be/avQUO4oVqyg. Repositorio: https://github.com/andresMC21/fruit-quality-classifier.git
 
 Plan de trabajo, roles y riesgos: [`docs/plan_trabajo.md`](docs/plan_trabajo.md). Arquitectura: [`docs/arquitectura.md`](docs/arquitectura.md). Los notebooks de `notebooks/` están ejecutados y muestran las tablas y figuras de cada fase.
 
